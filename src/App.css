@@ -1,0 +1,460 @@
+/* ═══════════════════════════════════════════════════════
+   App.css  —  VisitorHub Gate Pass  (Premium Redesign)
+   Accent  : #6C4CF1  (purple)
+   ═══════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background: #eef0f7;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page wrapper ─────────────────────────────────────── */
+.gp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+/* ── Pass card ────────────────────────────────────────── */
+.gp-pass {
+  width: 100%;
+  max-width: 780px;
+  background: #fff;
+  /* border-radius: 24px; */
+  box-shadow:
+    0 0 0 1px rgba(108,76,241,0.08),
+    0 8px 32px rgba(26,26,46,0.10),
+    0 2px 8px  rgba(26,26,46,0.06);
+  overflow: hidden;
+}
+
+/* ── Top strip ────────────────────────────────────────── */
+.gp-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: #1a1a2e;
+  gap: 12px;
+}
+
+.gp-strip__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gp-strip__eyebrow {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gp-strip__divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* Print button */
+.gp-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 7px;
+  background: rgba(108,76,241,0.85);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.gp-print-btn:hover { background: #6C4CF1; }
+
+/* ── Hero header ──────────────────────────────────────── */
+.gp-hero {
+  position: relative;
+  background: linear-gradient(135deg, #6C4CF1 0%, #4530b0 100%);
+  padding: 32px 28px 36px;
+  overflow: hidden;
+}
+
+/* Decorative blobs */
+.gp-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  pointer-events: none;
+}
+.gp-hero__blob--1 { width: 280px; height: 280px; top: -80px; right: -60px; }
+.gp-hero__blob--2 { width: 160px; height: 160px; bottom: -50px; left: 40%; }
+
+.gp-hero__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.gp-hero__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Avatar circle with visitor's initial */
+.gp-hero__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: 2.5px solid rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.gp-hero__name {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.gp-hero__company {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 3px;
+  font-weight: 400;
+}
+
+.gp-hero__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.gp-hero__pass-label {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gp-hero__pass-number {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: "Courier New", monospace;
+  background: rgba(255,255,255,0.14);
+  padding: 5px 14px;
+  border-radius: 8px;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.gp-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16,185,129,0.2);
+  border: 1px solid rgba(16,185,129,0.5);
+  color: #6ee7b7;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.gp-hero__badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: gp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gp-pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(1.4); }
+}
+
+/* ── Body ─────────────────────────────────────────────── */
+.gp-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 0;
+}
+
+/* ── QR panel ─────────────────────────────────────────── */
+.gp-qr-panel {
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  border-right: 1.5px dashed #e5e7f0;
+  background: #fafbff;
+}
+
+.gp-panel-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6C4CF1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gp-qr-frame {
+  background: #fff;
+  border: 1.5px solid #e5e7f0;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 2px 12px rgba(108,76,241,0.08);
+}
+
+.gp-qr-img {
+  width: 160px;
+  height: 160px;
+  display: block;
+}
+
+.gp-qr-empty {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.gp-qr-passno {
+    font-size: 13px;
+    font-family: "Courier New", monospace;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-align: center;
+    word-break: break-all;
+    background: #f1f0fe;
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: #6C4CF1;
+}
+
+/* ── Info panels ──────────────────────────────────────── */
+.gp-info-panels {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Info card */
+.gp-info-card {
+  background: #fafbff;
+  border: 1.5px solid #ede9fe;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.gp-info-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(to right, #f5f3ff, #fafbff);
+  border-bottom: 1px solid #ede9fe;
+}
+
+.gp-info-card__icon {
+  color: #6C4CF1;
+  display: flex;
+  align-items: center;
+}
+
+.gp-info-card__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6C4CF1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Info rows */
+.gp-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.gp-info-row:last-child { border-bottom: none; }
+
+.gp-info-row__label {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.gp-info-row__value {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: right;
+  word-break: break-word;
+}
+
+.gp-info-row__value--bold {
+  font-weight: 700;
+  color: #1a1a2e;
+  font-size: 0.88rem;
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+.gp-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #f8f9fc;
+  border-top: 1.5px solid #ede9fe;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* ── Loader ───────────────────────────────────────────── */
+.gp-loader-page {
+  min-height: 100vh;
+  background: #eef0f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.gp-spinner {
+  position: relative;
+  width: 56px;
+  height: 56px;
+}
+
+.gp-spinner__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #6C4CF1;
+  animation: gp-spin 0.9s linear infinite;
+}
+
+.gp-spinner__ring--inner {
+  inset: 10px;
+  border-top-color: transparent;
+  border-right-color: #c4b5fd;
+  animation: gp-spin 1.4s linear infinite reverse;
+}
+
+.gp-spinner__core {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 10px;
+  background: #6C4CF1;
+  border-radius: 50%;
+  animation: gp-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes gp-spin { to { transform: rotate(360deg); } }
+
+.gp-loader-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* ── Empty / Error ────────────────────────────────────── */
+.gp-empty-page {
+  min-height: 100vh;
+  background: #eef0f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 40px 24px;
+}
+.gp-empty-icon  { font-size: 3rem; margin-bottom: 4px; }
+.gp-empty-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; }
+.gp-empty-sub   { font-size: 0.85rem; color: #6b7280; max-width: 320px; }
+
+/* ── Print ────────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body, .gp-page { background: #fff; padding: 0; }
+  .gp-pass { box-shadow: none; border-radius: 0; max-width: 100%; }
+  .gp-hero, .gp-strip, .gp-info-card__header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  .gp-page { padding: 16px 12px; align-items: flex-start; }
+
+  .gp-hero { padding: 24px 20px 28px; }
+  .gp-hero__content { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .gp-hero__right { align-items: flex-start; }
+  .gp-hero__name { font-size: 1.2rem; }
+  .gp-hero__avatar { width: 52px; height: 52px; font-size: 1.3rem; }
+
+  .gp-body { grid-template-columns: 1fr; }
+
+  .gp-qr-panel {
+    border-right: none;
+    border-bottom: 1.5px dashed #e5e7f0;
+    padding: 20px 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .gp-info-panels { padding: 16px; gap: 14px; }
+
+  .gp-strip { padding: 8px 16px; }
+  .gp-footer { padding: 10px 16px; }
+}
+
+@media (max-width: 380px) {
+  .gp-hero__pass-number { font-size: 0.82rem; padding: 4px 10px; }
+  .gp-qr-img { width: 130px; height: 130px; }
+}
