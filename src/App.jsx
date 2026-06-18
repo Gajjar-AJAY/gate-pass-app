@@ -24,15 +24,62 @@ const InfoRow = ({ label, value, highlight }) => (
   </div>
 );
 
+/* ─── QR Modal ─── */
+const QRModal = ({ image, passNumber, onClose }) => {
+  // Close on backdrop click
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  return (
+    <div className="gp-modal-backdrop" onClick={handleBackdropClick} role="dialog" aria-modal="true" aria-label="QR Code enlarged view">
+      <div className="gp-modal">
+        <div className="gp-modal__header">
+          <span className="gp-modal__title">QR Code</span>
+          <button className="gp-modal__close" onClick={onClose} aria-label="Close QR modal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div className="gp-modal__body">
+          {image
+            ? <img src={image} alt="Gate Pass QR Code" className="gp-modal__qr-img" />
+            : <div className="gp-modal__qr-empty">QR unavailable</div>
+          }
+        </div>
+        <div className="gp-modal__footer">
+          <span className="gp-modal__passno">{passNumber}</span>
+          <p className="gp-modal__hint">Scan this code at entry</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ─── App ─── */
 function App() {
   const navigate = useNavigate();
   const { id } = useParams();
   const printRef = useRef(null);
 
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+  const [data, setData]         = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState(null);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -57,11 +104,13 @@ function App() {
           companyName:       record.visitorCompanyName || "—",
           hostEmployeeName:  record.hostPersonName     || "—",
           hostEmployeeEmail: record.hostPersonEmail    || "—",
-          purposeOfVisit:    record.purposeOfVisit    || "—",
+          purposeOfVisit:    record.purposeOfVisit     || "—",
           numberOfVisitors:  record.NoOfVisitor        ?? 1,
           qrCodeImage:       record.gatePassQR
                                ? `data:image/png;base64,${record.gatePassQR}`
                                : null,
+          visitorImg :       "data:image/jpeg;base64," + record.visitorImg,
+          curretnStatus:     record.curretnStatus || "-"
         });
       } catch (err) {
         setError("Could not load visitor record. Please check the link and try again.");
@@ -117,7 +166,7 @@ function App() {
           <div className="gp-hero__content">
             <div className="gp-hero__left">
               <div className="gp-hero__avatar">
-                {data.visitorName.charAt(0).toUpperCase()}
+                <img src={data.visitorImg} alt="visitor_img"/>
               </div>
               <div>
                 <h1 className="gp-hero__name">{data.visitorName}</h1>
@@ -129,7 +178,7 @@ function App() {
               <p className="gp-hero__pass-number">{data.passNumber}</p>
               <span className="gp-hero__badge">
                 <span className="gp-hero__badge-dot" />
-                Pre-approved
+                {data.curretnStatus}
               </span>
             </div>
           </div>
@@ -141,9 +190,24 @@ function App() {
           {/* QR panel */}
           <div className="gp-qr-panel">
             <p className="gp-panel-title">Scan QR Code</p>
-            <div className="gp-qr-frame">
+            <div
+              className={`gp-qr-frame${data.qrCodeImage ? " gp-qr-frame--clickable" : ""}`}
+              onClick={() => data.qrCodeImage && setQrModalOpen(true)}
+              role={data.qrCodeImage ? "button" : undefined}
+              tabIndex={data.qrCodeImage ? 0 : undefined}
+              aria-label={data.qrCodeImage ? "Click to enlarge QR code" : undefined}
+              onKeyDown={(e) => { if (data.qrCodeImage && (e.key === "Enter" || e.key === " ")) setQrModalOpen(true); }}
+            >
               {data.qrCodeImage
-                ? <img src={data.qrCodeImage} alt="Gate Pass QR" className="gp-qr-img" />
+                ? <>
+                    <img src={data.qrCodeImage} alt="Gate Pass QR" className="gp-qr-img" />
+                    <div className="gp-qr-overlay no-print">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                      </svg>
+                      <span>Tap to enlarge</span>
+                    </div>
+                  </>
                 : <div className="gp-qr-empty">QR unavailable</div>
               }
             </div>
@@ -175,9 +239,9 @@ function App() {
                 </span>
                 <span className="gp-info-card__title">Host Info</span>
               </div>
-              <InfoRow label="Host Person" value={data.hostEmployeeName}  highlight />
-              <InfoRow label="Host Email"  value={data.hostEmployeeEmail}           />
-              <InfoRow label="Type of Visit"  value={data.purposeOfVisit}           />
+              <InfoRow label="Host Person"  value={data.hostEmployeeName}  highlight />
+              <InfoRow label="Host Email"   value={data.hostEmployeeEmail}           />
+              <InfoRow label="Type of Visit" value={data.purposeOfVisit}            />
             </div>
 
           </div>
@@ -190,6 +254,16 @@ function App() {
         </div>
 
       </div>
+
+      {/* ── QR Modal ── */}
+      {qrModalOpen && (
+        <QRModal
+          image={data.qrCodeImage}
+          passNumber={data.passNumber}
+          onClose={() => setQrModalOpen(false)}
+        />
+      )}
+
     </div>
   );
 }

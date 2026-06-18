@@ -26,7 +26,6 @@ body {
   width: 100%;
   max-width: 780px;
   background: #fff;
-  /* border-radius: 24px; */
   box-shadow:
     0 0 0 1px rgba(108,76,241,0.08),
     0 8px 32px rgba(26,26,46,0.10),
@@ -132,6 +131,11 @@ body {
   letter-spacing: -0.02em;
 }
 
+.gp-hero__avatar img{
+      border-radius: 100%;
+    height: 62px;
+}
+
 .gp-hero__name {
   font-size: 1.45rem;
   font-weight: 800;
@@ -226,12 +230,58 @@ body {
   text-transform: uppercase;
 }
 
+/* ── QR frame with clickable overlay ─────────────────── */
 .gp-qr-frame {
+  position: relative;
   background: #fff;
   border: 1.5px solid #e5e7f0;
   border-radius: 14px;
-  padding: 10px;
   box-shadow: 0 2px 12px rgba(108,76,241,0.08);
+  overflow: hidden;
+}
+
+.gp-qr-frame--clickable {
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.gp-qr-frame--clickable:hover {
+  border-color: #6C4CF1;
+  box-shadow: 0 4px 20px rgba(108,76,241,0.18);
+  transform: translateY(-1px);
+}
+
+.gp-qr-frame--clickable:focus-visible {
+  outline: 2.5px solid #6C4CF1;
+  outline-offset: 3px;
+}
+
+/* Hover overlay on QR */
+.gp-qr-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(108,76,241,0.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 12px;
+}
+
+.gp-qr-frame--clickable:hover .gp-qr-overlay {
+  opacity: 1;
+}
+
+/* Touch: show overlay hint briefly on tap — handled via active state */
+.gp-qr-frame--clickable:active .gp-qr-overlay {
+  opacity: 1;
 }
 
 .gp-qr-img {
@@ -251,16 +301,16 @@ body {
 }
 
 .gp-qr-passno {
-    font-size: 13px;
-    font-family: "Courier New", monospace;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-align: center;
-    word-break: break-all;
-    background: #f1f0fe;
-    padding: 4px 10px;
-    border-radius: 6px;
-    color: #6C4CF1;
+  font-size: 13px;
+  font-family: "Courier New", monospace;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+  word-break: break-all;
+  background: #f1f0fe;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #6C4CF1;
 }
 
 /* ── Info panels ──────────────────────────────────────── */
@@ -415,6 +465,144 @@ body {
 .gp-empty-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; }
 .gp-empty-sub   { font-size: 0.85rem; color: #6b7280; max-width: 320px; }
 
+/* ══════════════════════════════════════════════════════
+   QR Modal
+   ══════════════════════════════════════════════════════ */
+
+.gp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 30, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: gp-backdrop-in 0.2s ease;
+}
+
+@keyframes gp-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.gp-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow:
+    0 0 0 1px rgba(108,76,241,0.12),
+    0 24px 60px rgba(10,10,30,0.30),
+    0 8px 20px rgba(10,10,30,0.16);
+  overflow: hidden;
+  animation: gp-modal-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes gp-modal-in {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* Modal header */
+.gp-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 12px;
+  background: linear-gradient(135deg, #6C4CF1, #4530b0);
+}
+
+.gp-modal__title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gp-modal__close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.gp-modal__close:hover  { background: rgba(255,255,255,0.32); }
+.gp-modal__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Modal body — QR image */
+.gp-modal__body {
+  padding: 28px 28px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafbff;
+}
+
+.gp-modal__qr-img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 12px;
+  border: 1.5px solid #ede9fe;
+  box-shadow: 0 4px 16px rgba(108,76,241,0.10);
+  display: block;
+}
+
+.gp-modal__qr-empty {
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  border: 1.5px dashed #e5e7f0;
+  border-radius: 12px;
+}
+
+/* Modal footer */
+.gp-modal__footer {
+  padding: 14px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #fafbff;
+  border-top: 1px solid #ede9fe;
+}
+
+.gp-modal__passno {
+  font-size: 0.88rem;
+  font-family: "Courier New", monospace;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #6C4CF1;
+  background: #f1f0fe;
+  padding: 5px 14px;
+  border-radius: 8px;
+}
+
+.gp-modal__hint {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
 /* ── Print ────────────────────────────────────────────── */
 @media print {
   .no-print { display: none !important; }
@@ -424,6 +612,7 @@ body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  .gp-modal-backdrop { display: none !important; }
 }
 
 /* ── Responsive ───────────────────────────────────────── */
@@ -431,8 +620,9 @@ body {
   .gp-page { padding: 16px 12px; align-items: flex-start; }
 
   .gp-hero { padding: 24px 20px 28px; }
+  .gp-panel-title{ display: none; }
   .gp-hero__content { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .gp-hero__right { align-items: flex-start; }
+  .gp-hero__right { align-items: flex-start; display: none; }
   .gp-hero__name { font-size: 1.2rem; }
   .gp-hero__avatar { width: 52px; height: 52px; font-size: 1.3rem; }
 
@@ -442,7 +632,7 @@ body {
     border-right: none;
     border-bottom: 1.5px dashed #e5e7f0;
     padding: 20px 16px;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
@@ -452,9 +642,20 @@ body {
 
   .gp-strip { padding: 8px 16px; }
   .gp-footer { padding: 10px 16px; }
+
+  /* Modal responsive */
+  .gp-modal {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  .gp-modal__body { padding: 20px 20px 12px; }
+  .gp-modal__footer { padding: 12px 20px 16px; }
 }
 
 @media (max-width: 380px) {
   .gp-hero__pass-number { font-size: 0.82rem; padding: 4px 10px; }
-  .gp-qr-img { width: 130px; height: 130px; }
+  .gp-qr-img { width: 250px; height: 250px; }
+
+  .gp-modal__qr-img { max-width: 240px; }
 }
