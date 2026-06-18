@@ -651,11 +651,13 @@ body {
 
   .gp-modal__body { padding: 20px 20px 12px; }
   .gp-modal__footer { padding: 12px 20px 16px; }
+
+  .gp-modal__passno{ display: none;}
 }
 
 @media (max-width: 380px) {
   .gp-hero__pass-number { font-size: 0.82rem; padding: 4px 10px; }
   .gp-qr-img { width: 250px; height: 250px; }
 
-  .gp-modal__qr-img { max-width: 240px; }
+  .gp-modal__qr-img { max-width: 300px; }
 }
